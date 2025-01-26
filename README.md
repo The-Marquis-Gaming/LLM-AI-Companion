@@ -35,22 +35,40 @@ LLM-Advisor is an advanced AI agent system designed to assist players in strateg
 ## Installation
 
 ### Prerequisites
-- Python 3.8 or higher
+- Python 3.10 or higher
 - Virtual environment (recommended)
 - Mistral API key
+- GEMINI API key
 - SwarmZero configuration
+
+### Setup
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/LLM-Advisor.git
+cd LLM-Advisor
+```
+
+2. Create and activate virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+4. Configure environment variables:
+```bash
+cp .env.example .env
+# Edit .env with your configuration values
+```
 
 ## Configuration
 
 ### Required Environment Variables
 - `MISTRAL_API_KEY`: Your Mistral AI API key
-- `MARQUIS_CONTRACT_ADDRESS`: Smart contract address
-- `RPC_URL`: RPC endpoint for blockchain interaction
-
-### Optional Settings
-- `LOG_LEVEL`: Logging detail level (default: INFO)
-- `ENVIRONMENT`: Development/production environment
-- `ARENA_ENABLED`: Enable/disable arena features
-- `MAX_STORED_GAMES`: Number of historical games to store
+- `GEMINI_API_KEY`: GEMINI API key
 
 

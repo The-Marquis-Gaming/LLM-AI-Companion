@@ -1,0 +1,24 @@
+# Core dependencies
+numpy>=1.26.4,<2.0.0
+pandas>=2.2.1
+python-dotenv>=1.0.1
+
+# AI and ML dependencies
+transformers>=4.38.2
+mistralai>=0.3.0
+llama-index==0.11.19
+anthropic==0.37.1
+
+# SwarmZero
+swarmzero==0.0.1
+
+# Async support
+aiohttp>=3.9.3
+asyncio>=3.4.3
+nest-asyncio>=1.5.9
+
+# Utilities
+tqdm>=4.66.2
+requests>=2.31.0
+python-dateutil>=2.8.2
+ipython==8.31.0

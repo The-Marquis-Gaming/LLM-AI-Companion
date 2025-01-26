@@ -1,0 +1,29 @@
+[model]
+model = "mistral-small"
+enable_multi_modal = false
+ollama_server_url = "https://api.mistral.ai"
+
+[sample_prompts]
+prompts = [
+  "Analyze this game state",
+  "Suggest optimal moves",
+  "Evaluate strategy effectiveness",
+]
+
+[environment]
+type = "dev"
+
+[timeout]
+llm = 30
+
+[target_agent_id]
+model = "mistral-small"
+timeout = 15
+environment = "dev"
+enable_multi_modal = false
+ollama_server_url = "https://api.mistral.ai"
+sample_prompts = [
+  "Analyze game state and provide insights",
+  "Suggest optimal moves for current position",
+  "Evaluate potential strategies",
+]
