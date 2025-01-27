@@ -1,3 +1,4 @@
+import aiohttp
 import asyncio
 import json
 import logging
@@ -6,7 +7,7 @@ from datetime import datetime
 from textwrap import indent
 
 # For optional Markdown display (like your snippet had):
-from IPython.display import Markdown
+from IPython.display import Markdown, display
 
 from dotenv import load_dotenv
 from swarmzero import Agent
@@ -219,7 +220,7 @@ async def handle_move(
     }
 
     # --- 1) Fetch the game state JSON from the remote URL ---
-    # For example: https://staging.api.themarquis.xyz/game/session/{session_id}
+    # For example: http://127.0.0.1:8080/game/session/{session_id}
     
     public_api_url=os.getenv("NEXT_PUBLIC_API_URL")
     
@@ -254,7 +255,7 @@ agent = Agent(
 # ------------------------------------------------------------
 async def listen_to_game_events():
     """
-    Connects to wss://staging.api.themarquis.xyz/ws and listens indefinitely.
+    Connects to websockets and listens indefinitely.
     On each move event, parse it and call handle_move().
     """
     uri = os.getenv("NEXT_PUBLIC_WS_URL")  # to run locally use ws://127.0.0.1:8080/ws
@@ -269,6 +270,13 @@ async def listen_to_game_events():
                     data = json.loads(message)
                     logger.info(f"Received WebSocket data: {data}")
 
+                    # 2) Filter out events that are not "play_move"
+                    event_type = data.get("event", "")
+                    if event_type != "play_move":
+                        logger.info(f"Ignoring event '{event_type}' since it's not 'play_move'.")
+                        continue
+
+                    # 3) Now it's a play_move event; parse data
                     move_data_str = data.get("data", "{}")
                     move_data = json.loads(move_data_str) if move_data_str else {}
 
@@ -289,13 +297,34 @@ async def listen_to_game_events():
                     logger.info(f"Advice for {next_player_id} Player: {advice}")
                     
                     # print(f"Advice for {next_player_id} Player: {advice}")
+                    
+                    # Send the LLM advice back to the server on the same WebSocket
+                    advice_message = {
+                        "event": f"advisor_recommendation_for_Player_{next_player_id}",
+                        "data": json.dumps(advice)  # Convert dict to JSON
+                    }
+                    
+                    # async with websockets.connect(uri) as websocket:
+                    #     await websocket.send(json.dumps(advice_message))
+                    
+                    async with aiohttp.ClientSession() as session:
+                        async with session.ws_connect(uri) as ws:
+                            # Send JSON data
+                            advice_message = {
+                                "event": f"advisor_recommendation_for_Player_{next_player_id}",
+                                "data": json.dumps(advice)  # Convert dict to JSON
+                            }
+                            await ws.send_json(advice_message)
+                            print("Data sent using aiohttp!")
+                        
+                    logger.info(f"Sent LLM advice back to the server: {advice_message}")               
 
         except (ConnectionRefusedError, websockets.WebSocketException) as wex:
-            logger.warning(f"WebSocket connection failed: {wex}. Retrying in 3s...")
-            await asyncio.sleep(3)
+            logger.warning(f"WebSocket connection failed: {wex}. Retrying in 1s...")
+            await asyncio.sleep(1)
         except Exception as ex:
             logger.error(f"Unexpected error in listen_to_game_events: {ex}")
-            await asyncio.sleep(3)
+            await asyncio.sleep(1)
 
 # ------------------------------------------------------------
 # 11) Main Entry Point
