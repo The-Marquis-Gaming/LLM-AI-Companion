@@ -315,7 +315,6 @@ async def listen_to_game_events():
                                 "data": json.dumps(advice)  # Convert dict to JSON
                             }
                             await ws.send_json(advice_message)
-                            print("Data sent using aiohttp!")
                         
                     logger.info(f"Sent LLM advice back to the server: {advice_message}")               
 
