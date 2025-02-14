@@ -35,7 +35,7 @@ LLM-Advisor is an advanced AI agent system designed to assist players in strateg
 ## Installation
 
 ### Prerequisites
-- Python 3.10 or higher
+- Python 3.11 or higher
 - Virtual environment (recommended)
 - Mistral API key
 - GEMINI API key
@@ -63,6 +63,13 @@ pip install -r requirements.txt
 ```bash
 cp .env.example .env
 # Edit .env with your configuration values
+```
+
+5. Run the Advisor you want in a given terminal:
+```bash
+python run GEMINI_Advisor.py
+python run Mistral_Advisor.py
+python run Mistral_Advisor_for_Creator.py
 ```
 
 ## Configuration
